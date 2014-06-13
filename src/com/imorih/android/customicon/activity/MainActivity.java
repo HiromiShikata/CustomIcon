@@ -1,10 +1,13 @@
 package com.imorih.android.customicon.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 import com.imorih.android.customicon.R;
 import com.imorih.android.customicon.fragment.AppListFragment;
@@ -17,6 +20,8 @@ public class MainActivity extends ActionBarActivity
 	public static final int REQUEST_CREATE_SHORTCUT = 0x200;
 	
 	private static final int MENU_ID_SHORTCUT = Menu.FIRST + 1;
+	private static final int MENU_ID_FROMLOG = Menu.FIRST + 2;
+	
 	
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -40,19 +45,37 @@ public class MainActivity extends ActionBarActivity
 				MENU_ID_SHORTCUT,
 				Menu.NONE,
 				"Shortcut")
-				.setIcon(R.drawable.ic_action_labels);
+//				.setIcon(R.drawable.ic_action_labels)
+				;
+		menu.add(
+				Menu.NONE,
+				MENU_ID_FROMLOG,
+				Menu.NONE,
+				"FromLog")
+//				.setIcon(R.drawable.ic_action_labels)
+				;
 		return true;
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		final int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		switch (id) {
+		case R.id.action_settings:
 			return true;
-		} else if (id == MENU_ID_SHORTCUT) {
+
+		case MENU_ID_SHORTCUT:
 			showPickShortcut();
 			return true;
+
+		case MENU_ID_FROMLOG:
+			showPickLog();
+			return true;
+
+		default:
+			break;
 		}
+
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -62,6 +85,27 @@ public class MainActivity extends ActionBarActivity
 				Intent.ACTION_CREATE_SHORTCUT));
 		intent.putExtra(Intent.EXTRA_TITLE, "Shortcuts");
 		startActivityForResult(intent, REQUEST_PICK_SHORTCUT);
+	}
+	private void showPickLog(){
+		final EditText editText = new EditText(this);
+		new AlertDialog.Builder(this)
+			.setIcon(android.R.drawable.ic_dialog_info)
+			.setTitle("")
+			.setView(editText)
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					SelectIconActivity.startActivityFromActivityLog(
+							MainActivity.this,
+							editText.getText().toString());
+				}
+			})
+			.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			})
+			.show();
 	}
 	
 	@Override
@@ -103,8 +147,7 @@ public class MainActivity extends ActionBarActivity
 	
 	private void showSelectIcon(
 			final String packageName) {
-		
 		SelectIconActivity.startActivity(this, packageName);
 	}
-	
+
 }

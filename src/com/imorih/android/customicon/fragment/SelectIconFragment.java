@@ -2,10 +2,12 @@ package com.imorih.android.customicon.fragment;
 
 import java.lang.reflect.Field;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -16,10 +18,15 @@ import com.imorih.android.customicon.adapter.IconAdapter;
 
 public class SelectIconFragment extends Fragment
 		implements
-		OnItemClickListener {
+		OnItemClickListener,
+		OnClickListener{
+	
 
 	public interface OnSelectIcon {
 		void onSelectIcon(int resourceId);
+	}
+	public interface OnPickGalleryImage {
+		void onClickGalleryBtn();
 	}
 
 	private static final String ICON_PREFIX = "icon_";
@@ -38,7 +45,7 @@ public class SelectIconFragment extends Fragment
 
 		mGridView.setAdapter(mAdapter);
 		mGridView.setOnItemClickListener(this);
-
+		rootView.findViewById(R.id.select_icon_btn_gallery).setOnClickListener(this);
 		return rootView;
 	}
 
@@ -74,6 +81,21 @@ public class SelectIconFragment extends Fragment
 		}
 		mAdapter.notifyDataSetChanged();
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.select_icon_btn_gallery:
+			if(!(getActivity() instanceof OnPickGalleryImage)){
+				return;
+			}
+			((OnPickGalleryImage)getActivity()).onClickGalleryBtn();
+			break;
+		default:
+			break;
+		}
+		
 	}
 
 }
