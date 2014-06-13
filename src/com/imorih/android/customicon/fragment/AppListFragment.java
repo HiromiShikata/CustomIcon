@@ -22,7 +22,6 @@ public class AppListFragment extends Fragment
 		implements
 		OnItemClickListener {
 	public static final int FLAG_APPLICATION_INFO = 0;
-
 	public interface OnSelectApp {
 		public void onSelectApp(String packageName);
 	}
@@ -65,9 +64,9 @@ public class AppListFragment extends Fragment
 		for (ResolveInfo ri : appInfo) {
 			App app = new App(ri.activityInfo.applicationInfo, pm);
 			mAdapter.add(app);
-
 		}
 
+		mAdapter.sortByName();
 		mAdapter.notifyDataSetChanged();
 
 	}

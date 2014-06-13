@@ -1,5 +1,9 @@
 package com.imorih.android.customicon.adapter;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +15,24 @@ import android.widget.TextView;
 import com.imorih.android.customicon.R;
 import com.imorih.android.customicon.model.App;
 
+
 public class AppAdapter extends ArrayAdapter<App> {
+	private static final Comparator<App> COMPARATOR_APPNAME = new Comparator<App>() {
+		@Override
+		public int compare(App lhs, App rhs) {
+			return lhs.getName().compareTo(rhs.getName());
+		}
+	};
+			
 	private LayoutInflater mInflator;
 
 	public AppAdapter(Context context) {
 		super(context, R.layout.row_app);
 		mInflator = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
+	public void sortByName(){
+		super.sort(COMPARATOR_APPNAME);
 	}
 
 	@Override

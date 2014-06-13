@@ -1,23 +1,16 @@
 package com.imorih.android.customicon.util;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.entity.ContentProducer;
-
-import android.R.integer;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.util.Log;
 
 public class Util {
@@ -45,10 +38,6 @@ public class Util {
 		
 		final Intent intent = new Intent(CREATE_SHORTCUT);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, appIntent);
-		
-//		final Parcelable icon = Intent.ShortcutIconResource.
-//				fromContext(context, iconResource);
-//		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
 		
 		
 		Bitmap bitmapOrig = BitmapFactory.decodeResource(context.getResources(), iconResource);
