@@ -1,8 +1,13 @@
 package com.imorih.android.customicon.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.http.client.utils.URLEncodedUtils;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -88,6 +93,7 @@ public class Util {
 		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
 		context.sendBroadcast(intent);
+			
 		
 	}
 	public static Intent getIntentFromActivityLog(
@@ -96,15 +102,28 @@ public class Util {
 		if(!mat.find()){
 			return null;
 		}
-		String act = mat.group(1);
-		String dat = mat.group(2);
+//		String act = mat.group(1);
+//		String dat = mat.group(2);
+//		String flg = mat.group(3);
+//		String cmpPackage = mat.group(4);
+//		String cmpClass = mat.group(5);
+//		
+		String act = "android.intent.action.VIEW";
+		String dat = "a";
 		String flg = mat.group(3);
 		String cmpPackage = mat.group(4);
 		String cmpClass = mat.group(5);
-		
+
 		Intent i = new Intent();
 		i.setAction(act);
-		i.setData(Uri.parse(dat));
+		String uriStr = dat;
+		try {
+			uriStr = URLEncoder.encode(dat,"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		i.setData(Uri.parse(uriStr));
 //		i.setFlags(Integer.parseInt(flg,16));
 		i.setComponent(new ComponentName(cmpPackage, cmpClass));
 		
