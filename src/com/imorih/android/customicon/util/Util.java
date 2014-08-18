@@ -23,6 +23,7 @@ public class Util {
 	private static final Pattern PAT_ACTIVITY_LOG = Pattern.compile(
 			".*?ActivityManager.*act=([^ ]*) (?:dat=([^ ]*)* ){0,1}flg=([^ ]*) cmp=([^ /]*)/([^ ]*) ");
 	private static final int ICON_SIZE = 256;
+	private static final String URL_GOOGLE_PHOTOS = "com.google.android.apps.photos.content";
 
 	private static void createShortCut(
 			final Context context,
@@ -59,15 +60,26 @@ public class Util {
 			Uri uri) {
 		
 		final Intent intent = new Intent(CREATE_SHORTCUT);
+		
+		
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, appIntent);
-		Log.e("test",uri.getPath());
-		Log.e("test",uri.toString());
+//		Bitmap bitmapOrig = BitmapFactory.decodeFile(uri.toString());
+		Bitmap bitmap = Bitmap.createScaledBitmap(bitmapOrig, ICON_SIZE, ICON_SIZE, true);
+		
+		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
+		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
+		context.sendBroadcast(intent);
+		
+	}
+	private static Bitmap getImage(Context context,Uri uri){
+		if(isGooglePhoto(uri)){
+			//http://mirukerapps.com/program/4_4-saf.html
+		}
 		Bitmap bitmapOrig = null;
 		try {
 			Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
 			cursor.moveToFirst();
 			String str = cursor.getString(0);
-			Log.e("test",str);
 			cursor.close();
 			
 			bitmapOrig = 
@@ -75,25 +87,18 @@ public class Util {
 					context.getContentResolver().openInputStream(uri)
 					);
 			
-			
+
 //			bitmapOrig = BitmapFactory.decodeStream(
 //					context.openFileInput(uri.toString()));
 //			bitmapOrig = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+			
 		} catch ( IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(bitmapOrig == null){
 			Log.e("","return !!!!!!");
-			return;
+			return null;
 		}
-//		Bitmap bitmapOrig = BitmapFactory.decodeFile(uri.toString());
-		Bitmap bitmap = Bitmap.createScaledBitmap(bitmapOrig, ICON_SIZE, ICON_SIZE, true);
-		
-		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
-		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
-		context.sendBroadcast(intent);
-			
 		
 	}
 	public static Intent getIntentFromActivityLog(
@@ -102,17 +107,17 @@ public class Util {
 		if(!mat.find()){
 			return null;
 		}
-//		String act = mat.group(1);
-//		String dat = mat.group(2);
-//		String flg = mat.group(3);
-//		String cmpPackage = mat.group(4);
-//		String cmpClass = mat.group(5);
-//		
-		String act = "android.intent.action.VIEW";
-		String dat = "a";
+		String act = mat.group(1);
+		String dat = mat.group(2);
 		String flg = mat.group(3);
 		String cmpPackage = mat.group(4);
 		String cmpClass = mat.group(5);
+		
+//		String act = "android.intent.action.VIEW";
+//		String dat = "a";
+//		String flg = mat.group(3);
+//		String cmpPackage = mat.group(4);
+//		String cmpClass = mat.group(5);
 
 		Intent i = new Intent();
 		i.setAction(act);
@@ -128,6 +133,9 @@ public class Util {
 		i.setComponent(new ComponentName(cmpPackage, cmpClass));
 		
 		return i;
+	}
+	public static boolean isGooglePhoto(Uri uri){
+		return URL_GOOGLE_PHOTOS.equals(uri.getAuthority());
 	}
 	
 	private Util() {
